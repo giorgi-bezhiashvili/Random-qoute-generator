@@ -1,17 +1,24 @@
-const express = require("express")
-const app = express()
-const fs = require(`fs`)
-const path = require("path")
-const codeQuotes = JSON.parse(fs.readFileSync(path.join(__dirname , "qoutes.json")))
-app.get("/qoutes" , (req,res)=>{
-    const qoutesValue = Object.keys(codeQuotes)
-    const keys = qoutesValue[Math.floor(Math.random()*qoutesValue.length)]
-    const randomLine = codeQuotes[keys] 
-    res.send(randomLine).status(200)
-})
+const express = require("express");
+const fs = require(`fs`);
+const path = require("path");
+const codeQuotes = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "qoutes.json")),
+);
+const privatekey = fs.readFileSync(path.join(__dirname, `localhost.key`));
+const privateCrt = fs.readFileSync(path.join(__dirname, `localhost.crt`));
+const https = require("https");
+const app = express();
 
+const httpsCredentials = { key: privatekey, cert: privateCrt };
 
-app.listen(3000 , (req,res)=>{
-    console.log(`Server Spinning on port 3000`);
-    
-})
+const server = https.createServer(httpsCredentials, app);
+
+app.get("/qoutes", (req, res) => {
+  const qoutesValue = Object.keys(codeQuotes);
+  const keys = qoutesValue[Math.floor(Math.random() * qoutesValue.length)];
+  const randomLine = codeQuotes[keys];
+  res.send(randomLine).status(200);
+});
+server.listen(3000, (req, res) => {
+  console.log(`Server is spinning on port 3000`);
+});
