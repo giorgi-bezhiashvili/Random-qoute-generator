@@ -4,7 +4,7 @@ const fs = require(`fs`);
 const path = require("path");
 const helmet = require(`helmet`);
 app.disable("x-powered-by");
-
+const https = require("https");
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -18,8 +18,7 @@ const codeQuotes = JSON.parse(
 );
 const privatekey = fs.readFileSync(path.join(__dirname, `localhost.key`));
 const privateCrt = fs.readFileSync(path.join(__dirname, `localhost.crt`));
-const https = require("https");
-const { xPoweredBy } = require("helmet");
+
 
 const httpsCredentials = { key: privatekey, cert: privateCrt };
 
