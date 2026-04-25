@@ -1,13 +1,25 @@
 const express = require("express");
+const app = express();
 const fs = require(`fs`);
 const path = require("path");
+const helmet = require(`helmet`);
+app.disable("x-powered-by");
+
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    xDownloadOptions: false,
+    xPoweredBy:false
+  }),
+);
+
 const codeQuotes = JSON.parse(
   fs.readFileSync(path.join(__dirname, "qoutes.json")),
 );
 const privatekey = fs.readFileSync(path.join(__dirname, `localhost.key`));
 const privateCrt = fs.readFileSync(path.join(__dirname, `localhost.crt`));
 const https = require("https");
-const app = express();
+const { xPoweredBy } = require("helmet");
 
 const httpsCredentials = { key: privatekey, cert: privateCrt };
 
